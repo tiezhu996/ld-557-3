@@ -4,6 +4,7 @@ import { CurrentUserDecorator } from '../../common/decorators/current-user.decor
 import { CurrentUser } from '../../types/request';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CreateReviewDto } from './dto/create-review.dto';
+import { GenerateReviewDraftDto } from './dto/generate-review-draft.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 
@@ -17,6 +18,15 @@ export class ReviewsController {
   @Get('portfolios/:portfolioId/reviews')
   list(@Param('portfolioId', ParseIntPipe) portfolioId: number, @CurrentUserDecorator() user: CurrentUser) {
     return this.reviewsService.list(portfolioId, user);
+  }
+
+  @Post('portfolios/:portfolioId/reviews/generate-draft')
+  generateDraft(
+    @Param('portfolioId', ParseIntPipe) portfolioId: number,
+    @Body() dto: GenerateReviewDraftDto,
+    @CurrentUserDecorator() user: CurrentUser,
+  ) {
+    return this.reviewsService.generateDraft(portfolioId, dto.period, user);
   }
 
   @Post('portfolios/:portfolioId/reviews')

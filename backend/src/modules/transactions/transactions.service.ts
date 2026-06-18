@@ -35,6 +35,14 @@ export class TransactionsService {
     return paginate(this.transactions.filter((item) => item.portfolioId === portfolioId), page, pageSize);
   }
 
+  listByPortfolioAndPeriod(portfolioId: number, start: Date, end: Date, user: CurrentUser) {
+    this.holdingsService.listByPortfolio(portfolioId, user);
+    return this.transactions.filter((item) => {
+      const executedAt = new Date(item.executedAt);
+      return item.portfolioId === portfolioId && executedAt >= start && executedAt <= end;
+    });
+  }
+
   create(holdingId: number, dto: CreateTransactionDto, user: CurrentUser) {
     const holding = this.holdingsService.findOwned(holdingId, user);
     const transaction: TransactionRecord = {
